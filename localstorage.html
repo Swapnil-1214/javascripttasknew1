@@ -1,0 +1,209 @@
+
+<html>
+  <head>
+      <title>
+          Reg. Form Using local storage js-part4
+      </title>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    </head>
+    <body>
+    
+    <div class="container">
+      <div class="col-sm-6" style="border: 1px solid gray;">
+      <h2>Employee Reg. Form</h2>
+      <form action="localstorage.html">
+          <div class="form-group">
+              <label for="name">Name:</label>
+              <input type="text" class="form-control" id="name" placeholder="Enter name" name="nme" required>
+            </div>
+
+        <div class="form-group">
+          <label for="age">Age:</label>
+          <input type="number" class="form-control" id="age" placeholder="Enter age" name="ag" required>
+        </div>
+        <div class="form-group">
+          <label for="salary">Salary:</label>
+          <input type="number" class="form-control" id="salary" placeholder="Enter salary" name="sal" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Email:</label>
+          <input type="email" class="form-control" id="email" placeholder="Enter email" name="eml" required>
+        </div>
+       
+        <button type="button" onclick="saveData()" id="save_btn" class="btn btn-default">Add</button>
+        <button type="button" onclick="deleteData()" id="delete_btn" class="btn btn-default">Delete</button>
+        <button type="button" onclick="listData()" id="show_btn" class="btn btn-default">List</button>
+        <button type="button" onclick="searchData()" id="search_btn" class="btn btn-default">Search</button>
+
+      </form>
+    </div>
+    <div class="col-sm-6" style="border: 1px solid gray;">
+      <h2 style="text-align: center;">Employee Table</h2>
+      <div class="row">
+        <div class="col-sm-3" style="background-color: #fff;padding: 10px;">Name</div>
+        <div class="col-sm-3" style="background-color: #fff;padding: 10px;">Age</div>
+        <div class="col-sm-3" style="background-color: #ffff;padding: 10px;">Salary</div>
+        <div class="col-sm-3" style="background-color: #ffff;padding: 10px;">Email</div>
+        
+      </div>
+      <div id="showUsers"></div>
+    </div>
+    </div>
+    
+      <div class="col-sm-6" style="border: 1px solid gray;">
+      <h2 style="text-align: center;">List Employee</h2>
+      <div class="row">
+        <div class="col-sm-3" style="background-color: #ffff;padding: 10px;">Name</div>
+        <div class="col-sm-3" style="background-color: #ffff;padding: 10px;">Age</div>
+        <div class="col-sm-3" style="background-color: #ffff;padding: 10px;">Salary</div>
+        <div class="col-sm-3" style="background-color: #ffff;padding: 10px;">Email</div>
+      </div>
+      <div id="listUsers"></div>
+      </div>
+     
+
+      <div class="col-sm-6" style="border: 1px solid gray;">
+        <h2 style="text-align: center;">Search Employee</h2>
+        <div class="row">
+          <div class="col-sm-3" style="background-color: #ffff;padding: 10px;">Name</div>
+          <div class="col-sm-3" style="background-color: #ffff;padding: 10px;">Age</div>
+          <div class="col-sm-3" style="background-color: #ffff;padding: 10px;">Salary</div>
+          <div class="col-sm-3" style="background-color: #ffff;padding: 10px;">Email</div>
+        </div>
+        <div id="searchUsers"></div>
+        </div>
+      
+      
+    
+    </body>
+    <script>
+      showData();
+
+      
+
+function saveData()
+{
+let name,age,salary,email;
+var mailformat = /^w+([.-]?w+)*@w+([.-]?w+)*(.w{2,3})+$/;
+name=document.getElementById("name").value;
+age=document.getElementById("age").value;
+salary=document.getElementById("salary").value;
+email=document.getElementById("email").value;
+
+let user_records=new Array();
+user_records=JSON.parse(localStorage.getItem("users"))?JSON.parse(localStorage.getItem("users")):[]
+if(name==null || name=="")
+{
+alert("Name cannot be blank");
+}
+
+else if(age==null || age=="")
+{
+  alert("Please enter your age!!");
+
+}
+else if(salary==null || salary=="")
+{
+  alert("Please enter your salary!!");
+
+}
+else if(user_records.some((v)=>{return v.email==email}))
+{
+alert("duplicate data");
+}
+else
+{
+user_records.push({
+"name":name,
+"age":age,
+"salary":salary,
+"email":email
+})
+localStorage.setItem("users",JSON.stringify(user_records));
+}
+
+showData();
+}
+
+
+function showData()
+{
+document.getElementById("showUsers").innerHTML="";
+let user_records=new Array();
+user_records=JSON.parse(localStorage.getItem("users"))?JSON.parse(localStorage.getItem("users")):[]
+
+  
+if(user_records)
+{
+  for(let i=0;i<user_records.length;i++)
+  {
+    let addDiv=document.createElement('div');
+addDiv.className="row";
+addDiv.innerHTML='  <div class="col-sm-3" style="padding: 10px;">'+user_records[i].name+'</div><div class="col-sm-3" style="padding: 10px;">'+user_records[i].age+'</div><div class="col-sm-3" style="padding: 10px;">'+user_records[i].salary+'</div><div class="col-sm-3" style="padding: 10px;">'+user_records[i].email+'</div>';
+document.getElementById("showUsers").appendChild(addDiv);
+
+  }
+}
+}
+
+function listData(){
+  document.getElementById("listUsers").innerHTML="";
+let user_records=new Array();
+user_records=JSON.parse(localStorage.getItem("users"))?JSON.parse(localStorage.getItem("users")):[]
+if(user_records)
+{
+  for(let i=0;i<user_records.length;i++)
+  {
+    let addDiv=document.createElement('div');
+addDiv.className="row";
+addDiv.innerHTML='  <div class="col-sm-3" style="padding: 10px;">'+user_records[i].name+'</div><div class="col-sm-3" style="padding: 10px;">'+user_records[i].age+'</div><div class="col-sm-3" style="padding: 10px;">'+user_records[i].salary+'</div><div class="col-sm-3" style="padding: 10px;">'+user_records[i].email+'</div>';
+document.getElementById("listUsers").appendChild(addDiv);
+
+    
+  }
+}
+}
+//correct
+function deleteData(){
+  document.getElementById("showUsers").innerHTML="";
+  document.getElementById("listUsers").innerHTML="";
+  localStorage.clear();
+}
+
+
+
+  
+function searchData()
+{
+document.getElementById("searchUsers").innerHTML="";
+namesearch=document.getElementById("name").value;
+emailsearch=document.getElementById("email").value;
+
+let user_records=new Array();
+user_records=JSON.parse(localStorage.getItem("users"))?JSON.parse(localStorage.getItem("users")):[]
+
+  
+if(user_records)
+{
+  
+  for(let i=0;i<user_records.length;i++)
+  {
+    if((namesearch === user_records[i].name) && (emailsearch === user_records[i].email)){
+    let addDiv=document.createElement('div');
+addDiv.className="row";
+addDiv.innerHTML='  <div class="col-sm-3" style="padding: 10px;">'+user_records[i].name+'</div><div class="col-sm-3" style="padding: 10px;">'+user_records[i].age+'</div><div class="col-sm-3" style="padding: 10px;">'+user_records[i].salary+'</div><div class="col-sm-3" style="padding: 10px;">'+user_records[i].email+'</div>';
+document.getElementById("searchUsers").appendChild(addDiv);
+
+  }
+}
+}
+
+}
+        </script>
+    </html>
+    
+    
